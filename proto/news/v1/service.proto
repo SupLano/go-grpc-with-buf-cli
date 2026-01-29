@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "github.com/supLano/go-grpc-proto/api/news/v1;newsv1";
+package news.v1;
+
+// import "google/protobuf/timestamp.proto";
+import "news/v1/news.proto";
+
+// NewsService is the service for news.
+service NewsService {
+  // CreateNews creates a new news.
+  rpc CreateNews (CreateNewsRequest) returns (CreateNewsResponse);
+  // UpdateNews updates an existing news.
+  rpc UpdateNews (UpdateNewsRequest) returns (UpdateNewsResponse);
+  // DeleteNews deletes an existing news.
+  rpc DeleteNews (DeleteNewsRequest) returns (DeleteNewsResponse);
+  // GetNews gets an existing news.
+  rpc GetNews (GetNewsRequest) returns (GetNewsResponse);
+  // ListNews lists all news.
+  rpc ListNews (ListNewsRequest) returns (ListNewsResponse);
+}
