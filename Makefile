@@ -1,9 +1,36 @@
-lint-break:
-	buf breaking --against 'github.com/supLano/go-grpc-proto/api'
+GO_BIN?=$(shell pwd)/.bin
+GOCI_LINT_VERSION?=v1.64.5
 
-lint-proto:
-	buf lint
+export PATH := $(GO_BIN):$(PATH)
 
+# Format the code
+format::
+	golangci-lint run --fix -v ./...
 
-generate-proto:
-	buf generate --template buf.gen.yaml
+# Generate the go code from the proto files
+generate-proto::
+	 buf generate --template buf.gen.yaml
+
+# Detech any breaking change in proto
+lint-breaking::
+	 buf breaking --against 'https://github.com/supLano/go-grpc-with-buf-cli.git#branch=main'
+
+lint-go::
+	golangci-lint run -v ./...
+
+# Lint the proto files
+lint-proto::
+	 buf lint --config buf.yaml
+
+# Run all linters
+lint:: lint-breaking lint-go lint-proto
+
+# Install tool in local bin 
+install-tools::
+	mkdir -p "${GO_BIN}"
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "${GO_BIN}" ${GOCI_LINT_VERSION}
+	# go install tool (removed invalid command)
+
+# Run tidy
+tidy::
+	go mod tidy -v
