@@ -4,16 +4,17 @@ option go_package = "github.com/supLano/go-grpc-proto/api/news/v1;newsv1";
 
 package news.v1;
 import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
 
 // NewsRequest is the request message for the News method.
 message CreateNewsRequest {
-  string          id       = 1;
-  string          topic    = 2;
-  string          language = 3;
-  string          country  = 4;
-  string          author   = 5;
-  string          content  = 6;
-  repeated string keywords = 7;
+  string          id       = 1 [(buf.validate.field).string.uuid = true] ;
+  string          topic    = 2 [(buf.validate.field).string.min_len = 3, (buf.validate.field).string.max_len = 100];
+  string          language = 3 [(buf.validate.field).string.min_len = 2, (buf.validate.field).string.max_len = 100];
+  string          country  = 4 [(buf.validate.field).string.min_len = 2, (buf.validate.field).string.max_len = 100];
+  string          author   = 5 [(buf.validate.field).string.min_len = 2, (buf.validate.field).string.max_len = 100];
+  string          content  = 6 [(buf.validate.field).string.min_len = 2, (buf.validate.field).string.max_len = 100];
+  repeated string keywords = 7 [(buf.validate.field).repeated.items.string.min_len = 2, (buf.validate.field).repeated.items.string.max_len = 100];
 }
 
 message UpdateNewsRequest {
@@ -27,16 +28,17 @@ message UpdateNewsRequest {
 }
 
 message DeleteNewsRequest {
-  string          id       = 1;
+  string id = 1;
 }
 
 message GetNewsRequest {
-  string          id       = 1;
+  string id = 1;
 }
 
 message ListNewsRequest {
-    string          id       = 1;
+  string id = 1;
 }
+
 // NewsResponse is the response message for the News method.
 message NewsResponse {
   string                    id         = 1;
@@ -52,67 +54,57 @@ message NewsResponse {
 }
 
 message CreateNewsResponse {
-    string                    id         = 1;
-    string                    topic      = 2;
-    string                    language   = 3;
-    string                    country    = 4;
-    string                    author     = 5;
-    string                    content    = 6;
-    repeated string           keywords   = 7;
-    google.protobuf.Timestamp created_at = 8;
-    google.protobuf.Timestamp updated_at = 9;
-    google.protobuf.Timestamp deleted_at = 10;
+  string                    id         = 1;
+  string                    topic      = 2;
+  string                    language   = 3;
+  string                    country    = 4;
+  string                    author     = 5;
+  string                    content    = 6;
+  repeated string           keywords   = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp deleted_at = 10;
 }
 
 message UpdateNewsResponse {
-    string                    id         = 1;
-    string                    topic      = 2;
-    string                    language   = 3;
-    string                    country    = 4;
-    string                    author     = 5;
-    string                    content    = 6;
-    repeated string           keywords   = 7;
-    google.protobuf.Timestamp created_at = 8;
-    google.protobuf.Timestamp updated_at = 9;
-    google.protobuf.Timestamp deleted_at = 10;
+  string                    id         = 1;
+  string                    topic      = 2;
+  string                    language   = 3;
+  string                    country    = 4;
+  string                    author     = 5;
+  string                    content    = 6;
+  repeated string           keywords   = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp deleted_at = 10;
 }
 
 message DeleteNewsResponse {
-    string                    id         = 1;
-    string                    topic      = 2;
-    string                    language   = 3;
-    string                    country    = 4;
-    string                    author     = 5;
-    string                    content    = 6;
-    repeated string           keywords   = 7;
-    google.protobuf.Timestamp created_at = 8;
-    google.protobuf.Timestamp updated_at = 9;
-    google.protobuf.Timestamp deleted_at = 10;
+  string id = 1;
 }
 
 message GetNewsResponse {
-    string                    id         = 1;
-    string                    topic      = 2;
-    string                    language   = 3;
-    string                    country    = 4;
-    string                    author     = 5;
-    string                    content    = 6;
-    repeated string           keywords   = 7;
-    google.protobuf.Timestamp created_at = 8;
-    google.protobuf.Timestamp updated_at = 9;
-    google.protobuf.Timestamp deleted_at = 10;
+  string                    id         = 1;
+  string                    topic      = 2;
+  string                    language   = 3;
+  string                    country    = 4;
+  string                    author     = 5;
+  string                    content    = 6;
+  repeated string           keywords   = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp deleted_at = 10;
 }
 
 message ListNewsResponse {
-    string                    id         = 1;
-    string                    topic      = 2;
-    string                    language   = 3;
-    string                    country    = 4;
-    string                    author     = 5;
-    string                    content    = 6;
-    repeated string           keywords   = 7;
-    google.protobuf.Timestamp created_at = 8;
-    google.protobuf.Timestamp updated_at = 9;
-    google.protobuf.Timestamp deleted_at = 10;
+  string                    id         = 1;
+  string                    topic      = 2;
+  string                    language   = 3;
+  string                    country    = 4;
+  string                    author     = 5;
+  string                    content    = 6;
+  repeated string           keywords   = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+    // google.protobuf.Timestamp deleted_at = 10;
 }
-  

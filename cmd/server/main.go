@@ -3,6 +3,9 @@ package main
 import (
 	"log"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -10,7 +13,8 @@ import (
 
 	newsv1 "github.com/supLano/go-grpc-proto/api/news/v1"
 	internal_grpc "github.com/supLano/go-grpc-proto/internal/grpc"
-)	
+	"github.com/supLano/go-grpc-proto/memstore"
+)
 
 func main() {
 	// Create a listener on TCP port 50051
@@ -23,14 +27,26 @@ func main() {
 	server := grpc.NewServer()
 
 	// Register the NewsService implementation
-	newsv1.RegisterNewsServiceServer(server, &internal_grpc.Server{})
+	store := memstore.NewNewsMemStore()
+	newsv1.RegisterNewsServiceServer(server, internal_grpc.NewServer(store))
 
 	healthServer := health.NewServer()
 	healthgrpc.RegisterHealthServer(server, healthServer)
 
 	// Start serving
-	log.Println("Server started on :50051")
-	if err := server.Serve(listener); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	go func() {
+		log.Println("Server started on :50051")
+		if err := server.Serve(listener); err != nil {
+			log.Fatalf("failed to serve: %v", err)
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shutdown the server
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	log.Println("Stopping server...")
+	server.GracefulStop()
+	log.Println("Server stopped")
 }

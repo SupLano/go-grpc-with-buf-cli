@@ -25,10 +25,10 @@ type News struct {
 
 type NewsStore interface {
 	CreateNews(ctx context.Context, news *News) error
-	UpdateNews(ctx context.Context, news *News) error
-	DeleteNews(ctx context.Context, news *News) error
+	UpdateNews(ctx context.Context, news *News) []*News
+	DeleteNews(ctx context.Context, id string) error
 	GetNews(ctx context.Context, id string) (*News, error)
-	ListNews(ctx context.Context, news *News) error	
+	ListNews(ctx context.Context) []*News	
 }
 
 type NewsMemStore struct {
@@ -79,10 +79,10 @@ func (s *NewsMemStore) UpdateNews(ctx context.Context, news *News) error {
 	return nil
 }
 
-func (s *NewsMemStore) DeleteNews(ctx context.Context, news *News) error {
+func (s *NewsMemStore) DeleteNews(ctx context.Context, id string) error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
-	delete(s.news, news.ID.String())
+	delete(s.news, id)
 	return nil
 }
 
@@ -106,7 +106,7 @@ func (s *NewsMemStore) GetNews(ctx context.Context, id string) (*News, error) {
 	return news, nil
 }
 
-func (s *NewsMemStore) ListNews(ctx context.Context, news *News) error {
+func (s *NewsMemStore) ListNews(ctx context.Context) []*News {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	var newsList []*News
@@ -121,8 +121,7 @@ func (s *NewsMemStore) ListNews(ctx context.Context, news *News) error {
 			Keywords: news.Keywords,
 			CreatedAt: news.CreatedAt,
 			UpdatedAt: news.UpdatedAt,
-			DeletedAt: news.DeletedAt,
 		})
 	}
-	return nil
+	return newsList
 }
